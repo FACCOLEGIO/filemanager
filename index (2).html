@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Controle de boletos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark light;--bg:#07070f;--card:rgba(255,255,255,.055);--solid:#15142b;--tx:#f5f4ff;--tx2:#a9a7c8;--ln:rgba(255,255,255,.1);--fld:rgba(255,255,255,.07);--fldh:rgba(255,255,255,.11);--ac:#9a8cff;--rd:#ff6b86;--grad:linear-gradient(135deg,#4f46e5 0%,#8b3dff 52%,#d6338f 100%);--glow:0 10px 30px -8px rgba(139,61,255,.65);--sh:0 1px 0 rgba(255,255,255,.07) inset,0 30px 60px -30px rgba(0,0,0,.8);--o1:rgba(79,70,229,.45);--o2:rgba(214,51,143,.28);--o3:rgba(20,184,166,.18);--hd:Poppins,"SF Pro Display",-apple-system,"Segoe UI",system-ui,sans-serif;--bd:Inter,"SF Pro Text",-apple-system,"Segoe UI",system-ui,sans-serif}
+@media(prefers-color-scheme:light){:root{--bg:#f5f3fb;--card:rgba(255,255,255,.72);--solid:#fff;--tx:#14112b;--tx2:#5f5c7d;--ln:rgba(40,25,110,.1);--fld:rgba(70,50,160,.06);--fldh:rgba(70,50,160,.11);--ac:#5a3df0;--rd:#d31f49;--sh:0 1px 0 #fff inset,0 24px 50px -28px rgba(60,40,140,.35);--o1:rgba(99,85,255,.28);--o2:rgba(236,72,153,.18);--o3:rgba(20,184,166,.14)}}
+*{box-sizing:border-box;margin:0}
+body{font:400 16px/1.6 var(--bd);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(800px 520px at 8% -8%,var(--o1),transparent 70%),radial-gradient(700px 520px at 100% 105%,var(--o2),transparent 70%),radial-gradient(420px 320px at 92% 8%,var(--o3),transparent 70%)}
+.wrap{max-width:1140px;margin:0 auto;padding:clamp(22px,5vw,64px) clamp(16px,4vw,32px)}
+header{margin-bottom:36px}
+h1{font:600 clamp(32px,5.4vw,52px)/1.08 var(--hd);letter-spacing:-.035em;background:linear-gradient(120deg,var(--tx) 30%,var(--ac) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{font:400 17px var(--bd);color:var(--tx2);margin-top:10px;max-width:46ch}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);backdrop-filter:saturate(170%) blur(28px);-webkit-backdrop-filter:saturate(170%) blur(28px);border:1px solid var(--ln);border-radius:26px;box-shadow:var(--sh);padding:26px}
+.panel+.panel{margin-top:24px}
+.side{position:sticky;top:20px}
+@media(max-width:860px){.side{position:static}}
+label{display:block;font:500 13px var(--bd);letter-spacing:.01em;color:var(--tx2);margin:0 0 7px 2px}
+.row{display:flex;gap:8px;align-items:stretch}
+.field{margin-bottom:16px}
+select,input[type=text]{width:100%;font:400 15px var(--bd);color:var(--tx);background:var(--fld);border:1px solid var(--ln);border-radius:14px;padding:12px 14px;outline:none;transition:.2s;appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%239a8cff' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;padding-right:40px;text-overflow:ellipsis}
+option{background:var(--solid);color:var(--tx)}
+select:hover,input:hover{background-color:var(--fldh)}
+select:focus,input:focus,button:focus-visible{border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 28%,transparent)}
+button{font:500 14.5px var(--bd);cursor:pointer;border:1px solid var(--ln);border-radius:14px;padding:11px 18px;transition:.2s;outline:none;color:var(--tx);background:var(--fld)}
+button:hover{background:var(--fldh);border-color:color-mix(in srgb,var(--ac) 45%,var(--ln))}
+button:active{transform:scale(.97)}
+button.pri{background:var(--grad);background-size:140% 100%;background-position:0 0;color:#fff;border:0;width:100%;padding:14px;font:600 16px var(--hd);letter-spacing:.005em;box-shadow:var(--glow)}
+button.pri:hover{background-position:100% 0;box-shadow:0 14px 36px -8px rgba(214,51,143,.6);transform:translateY(-1px)}
+button.pri:active{transform:scale(.98)}
+button.ico{width:46px;padding:0;font-size:20px;flex:none;line-height:1;color:var(--ac)}
+button.danger{color:var(--rd);background:color-mix(in srgb,var(--rd) 10%,transparent);border-color:color-mix(in srgb,var(--rd) 22%,transparent)}
+button.danger:hover{background:color-mix(in srgb,var(--rd) 19%,transparent)}
+button.sm{padding:6px 12px;font-size:13.5px;border-radius:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.links button{flex:1;white-space:nowrap}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h3{font:600 20px var(--hd);letter-spacing:-.02em}
+.bar div{display:flex;gap:8px;flex-wrap:wrap}
+#list{padding:10px 4px 0}
+.blk{margin-bottom:38px;break-inside:avoid}
+.blk h2{font:600 22px var(--hd);letter-spacing:-.025em;margin-bottom:16px;padding-left:14px;position:relative;break-after:avoid;page-break-after:avoid}
+.blk h2::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:4px;border-radius:4px;background:var(--grad)}
+.it{margin-bottom:18px;padding-left:14px;break-inside:avoid}
+.it .ad{font-weight:500;color:var(--tx)}
+.it .fl{color:var(--tx2)}
+.empty{color:var(--tx2);text-align:center;padding:52px 12px}
+.rec{border-top:1px solid var(--ln);padding:16px 0}
+.rec:first-of-type{border-top:0}
+.rec .t{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.rec b{font:600 15px var(--hd)}.rec small{color:var(--tx2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--ac) 14%,transparent);border:1px solid color-mix(in srgb,var(--ac) 26%,transparent);border-radius:99px;padding:3px 5px 3px 12px;font-size:13.5px}
+.chip button{padding:0;width:20px;height:20px;border-radius:50%;font-size:14px;line-height:18px;border:0;color:var(--tx2);background:color-mix(in srgb,var(--tx) 12%,transparent)}
+.chip button:hover{background:var(--rd);color:#fff}
+dialog{border:1px solid var(--ln);border-radius:26px;padding:26px;width:min(440px,calc(100vw - 32px));background:var(--solid);color:var(--tx);box-shadow:0 40px 90px rgba(0,0,0,.5);animation:pop .22s ease}
+dialog::backdrop{background:rgba(5,4,20,.5);backdrop-filter:blur(8px)}
+@keyframes pop{from{opacity:0;transform:scale(.95)}}
+dialog h3{margin-bottom:14px}
+dialog p{color:var(--tx2);margin-bottom:18px}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.acts button{min-width:90px}
+.mg{max-height:260px;overflow:auto;margin-top:14px}
+.mg div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--ln)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mgrid label{display:flex;align-items:center;gap:6px;margin:0;color:var(--tx);background:var(--fld);border:1px solid var(--ln);padding:8px 10px;border-radius:12px;font-size:14px;cursor:pointer}
+.mgrid input{accent-color:#8b3dff}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:var(--grad);color:#fff;padding:11px 20px;border-radius:99px;font:500 14px var(--bd);opacity:0;pointer-events:none;transition:.3s;z-index:99;box-shadow:var(--glow)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+ @page{margin:18mm}
+ body{background:#fff;color:#000;font-size:12pt}body::before{display:none}
+ .wrap{padding:0;max-width:none}header,.side,.bar,#manager,#toast,dialog{display:none!important}
+ .grid{display:block}.panel{background:none;border:0;box-shadow:none;padding:0;backdrop-filter:none}
+ .blk h2::before{display:none}.blk h2,.it{padding-left:0}.blk h2,.it .ad,.it .fl{color:#000}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><h1>Controle de boletos</h1><p>Documentos pendentes por prestadora, endereço e mês.</p></div></header>
+<div class="grid">
+ <aside class="side panel">
+  <div class="field"><label for="selP">Prestadora</label><div class="row"><select id="selP"></select><button class="ico" id="btnP" title="Gerenciar prestadoras" aria-label="Gerenciar prestadoras">+</button></div></div>
+  <div class="field"><label for="selA">Endereço</label><div class="row"><select id="selA"></select><button class="ico" id="btnA" title="Adicionar endereço" aria-label="Adicionar endereço">+</button></div></div>
+  <div class="two">
+   <div class="field"><label for="selM">Mês</label><select id="selM"></select></div>
+   <div class="field"><label for="selY">Ano</label><div class="row"><select id="selY"></select><button class="ico" id="btnY" title="Gerenciar anos" aria-label="Gerenciar anos">+</button></div></div>
+  </div>
+  <button class="pri" id="add">Adicionar pendência</button>
+  <div class="links"><button id="btnP2">Adicionar prestadora</button><button id="btnA2">Adicionar endereço</button></div>
+  <div class="links"><button class="danger" id="clear">Limpar tudo</button></div>
+ </aside>
+ <main>
+  <section class="panel">
+   <div class="bar"><h3>Listagem</h3><div><button id="copy">Copiar listagem</button><button id="print">Imprimir / Salvar PDF</button></div></div>
+   <div id="list"></div>
+  </section>
+  <section class="panel" id="manager"><h3>Registros</h3><div id="recs"></div></section>
+ </main>
+</div>
+</div>
+<div id="toast" role="status"></div>
+<dialog id="dlg"></dialog>
+
+<script>
+(()=>{
+const KEY='controle_boletos_v1';
+const MESES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro'];
+const defaults=()=>({providers:['VIVO','BRISANET','ALARES','LUZ COSERN','ÁGUA CAERN'],
+ addresses:['Rua Acopiara 2332','Av. Senhor do Bonfim, 2081','R. Limoeiro do Norte, 25','R. Acopiara, 2334','Av. Senhor do Bonfim, 2081 A','Av. Senhor do Bonfim, 2069','Rua Limoeiro do Norte, 2329','Rua Limoeiro do Norte, 25 A','Rua Acopiara, 2346','Rua Acopiara, 2334 A','Rua Acopiara, 2332','Rua Acopiara, 2326 A','Rua Acopiara, 2338','Rua Pedra Branca, 2572','Rua Acopiara 2326'],
+ years:[2026],items:[]});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.providers)S=defaults();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Não foi possível salvar neste navegador.')}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function addrKey(a){
+ const m=a.trim().match(/^(.*?)[,\s]+(\d+)\s*([A-Za-z]?)\s*$/);
+ let street=m?m[1]:a,num=m?+m[2]:Infinity,suf=m?m[3].toLowerCase():'';
+ street=norm(street).replace(/^r\.?\s/,'rua ').replace(/^av\.?\s/,'avenida ').replace(/[.,]/g,'').replace(/\s+/g,' ');
+ return{street,num,suf};
+}
+function cmpAddr(a,b){
+ const x=addrKey(a),y=addrKey(b);
+ return x.street.localeCompare(y.street,'pt')||x.num-y.num||x.suf.localeCompare(y.suf)||a.localeCompare(b,'pt');
+}
+const sortedAddr=()=>[...S.addresses].sort(cmpAddr);
+function fmt(ms){
+ const n=[...ms].sort((a,b)=>a-b).map(i=>MESES[i]);
+ if(n.length<2)return 'Falta '+n.join('');
+ return 'Falta '+n.slice(0,-1).join(', ')+' e '+n[n.length-1];
+}
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2400)}
+
+function opts(sel,arr,val,fn){const cur=val!==undefined?val:sel.value;sel.innerHTML=arr.map(v=>`<option value="${esc(fn?fn(v):v)}">${esc(v)}</option>`).join('');if([...sel.options].some(o=>o.value===String(cur)))sel.value=cur}
+function fillSelects(){
+ opts($('selP'),S.providers);
+ opts($('selA'),sortedAddr());
+ $('selM').innerHTML=MESES.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+ const ys=[...S.years].sort((a,b)=>a-b);
+ const cur=$('selY').value;
+ $('selY').innerHTML=ys.map(y=>`<option>${y}</option>`).join('');
+ $('selY').value=ys.includes(+cur)?cur:(ys.includes(2026)?'2026':ys[0]);
+}
+function groups(){
+ return S.providers.map(p=>({p,its:S.items.filter(i=>i.p===p&&i.m.length).sort((a,b)=>cmpAddr(a.a,b.a)||a.y-b.y)})).filter(g=>g.its.length);
+}
+function render(){
+ const g=groups();
+ $('list').innerHTML=g.length?g.map(b=>`<div class="blk"><h2>${esc(b.p)}</h2>${b.its.map(i=>`<div class="it"><div class="ad">${esc(i.a)} – ${i.y}</div><div class="fl">${fmt(i.m)}</div></div>`).join('')}</div>`).join(''):'<div class="empty">Nenhuma pendência registrada.<br>Escolha prestadora, endereço, mês e ano para começar.</div>';
+ const all=g.flatMap(b=>b.its.map(i=>({...i})));
+ $('recs').innerHTML=all.length?all.map(i=>`<div class="rec"><div class="t"><div><b>${esc(i.p)}</b><br><small>${esc(i.a)} – ${i.y}</small></div><div><button class="sm" data-e="${i.id}">Editar</button> <button class="sm danger" data-d="${i.id}">Excluir</button></div></div><div class="chips">${[...i.m].sort((a,b)=>a-b).map(m=>`<span class="chip">${MESES[m]}<button data-r="${i.id}:${m}" aria-label="Remover ${MESES[m]}">×</button></span>`).join('')}</div></div>`).join(''):'<p style="color:var(--tx2)">Os registros aparecerão aqui para edição.</p>';
+}
+const commit=()=>{S.items=S.items.filter(i=>i.m.length);save();fillSelects();render()};
+
+/* pendências */
+$('add').onclick=()=>{
+ const p=$('selP').value,a=$('selA').value,y=+$('selY').value,m=+$('selM').value;
+ if(!p||!a||!y){toast('Preencha prestadora, endereço e ano.');return}
+ let it=S.items.find(i=>i.p===p&&i.a===a&&i.y===y);
+ if(it&&it.m.includes(m)){toast('Essa pendência já existe.');return}
+ if(it)it.m.push(m);else S.items.push({id:uid(),p,a,y,m:[m]});
+ commit();toast('Pendência adicionada.');
+};
+$('recs').onclick=async e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.r){const[id,m]=b.dataset.r.split(':');const it=S.items.find(i=>i.id===id);it.m=it.m.filter(x=>x!==+m);commit()}
+ else if(b.dataset.d){const it=S.items.find(i=>i.id===b.dataset.d);if(await confirmBox('Excluir registro',`Excluir todas as pendências de ${it.p} em ${it.a} (${it.y})?`,'Excluir')){S.items=S.items.filter(i=>i!==it);commit()}}
+ else if(b.dataset.e)editItem(b.dataset.e);
+};
+
+/* diálogos */
+const dlg=$('dlg');
+function open(html){dlg.innerHTML=html;if(!dlg.open)dlg.showModal()}
+function confirmBox(title,msg,ok){
+ return new Promise(res=>{
+  open(`<h3>${esc(title)}</h3><p>${esc(msg)}</p><div class="acts"><button id="n">Cancelar</button><button class="danger" id="y">${esc(ok||'Confirmar')}</button></div>`);
+  dlg.onclose=()=>res(dlg.returnValue==='y');
+  $('n').onclick=()=>dlg.close('n');$('y').onclick=()=>dlg.close('y');
+ });
+}
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close('n')});
+function manage(kind){
+ const cfg={p:{t:'Prestadoras',ph:'Nome da prestadora',arr:()=>S.providers,lab:'prestadora'},a:{t:'Endereços',ph:'Ex.: Rua Pedra Branca, 2572',arr:sortedAddr,lab:'endereço'},y:{t:'Anos',ph:'Ex.: 2027',arr:()=>[...S.years].sort((a,b)=>a-b),lab:'ano'}}[kind];
+ const draw=()=>{
+  open(`<h3>${cfg.t}</h3><div class="row"><input type="text" id="inp" placeholder="${cfg.ph}" ${kind==='y'?'inputmode="numeric"':''} autocomplete="off"><button class="pri" style="width:auto" id="ok">Adicionar</button></div><div class="mg">${cfg.arr().map((v,i)=>`<div><span>${esc(v)}</span><button class="sm danger" data-i="${i}">Excluir</button></div>`).join('')}</div><div class="acts"><button id="cl">Concluir</button></div>`);
+  dlg.onclose=null;
+  $('cl').onclick=()=>dlg.close();
+  $('inp').focus();
+  const add=()=>{
+   let v=$('inp').value.trim().replace(/\s+/g,' ');if(!v)return;
+   if(kind==='y'){if(!/^\d{4}$/.test(v)){toast('Digite um ano com 4 dígitos.');return}v=+v}
+   if(kind==='p')v=v.toUpperCase();
+   const list=kind==='p'?S.providers:kind==='a'?S.addresses:S.years;
+   if(list.some(x=>String(x).toLowerCase()===String(v).toLowerCase())){toast('Já cadastrado.');return}
+   list.push(v);save();fillSelects();
+   if(kind==='a')$('selA').value=v;if(kind==='p')$('selP').value=v;if(kind==='y')$('selY').value=v;
+   render();draw();toast('Adicionado.');
+  };
+  $('ok').onclick=add;$('inp').onkeydown=e=>{if(e.key==='Enter')add()};
+  dlg.querySelector('.mg').onclick=async e=>{
+   const b=e.target.closest('button');if(!b)return;
+   const v=cfg.arr()[+b.dataset.i];
+   const f=i=>kind==='p'?i.p===v:kind==='a'?i.a===v:i.y===v;
+   const n=S.items.filter(f).length;
+   const msg=n?`Existem ${n} registro(s) de pendências ligados a este ${cfg.lab}. Eles também serão excluídos.`:`Excluir "${v}"?`;
+   if(await confirmBox('Excluir '+cfg.lab,msg,'Excluir')){
+    S.items=S.items.filter(i=>!f(i));
+    if(kind==='p')S.providers=S.providers.filter(x=>x!==v);
+    if(kind==='a')S.addresses=S.addresses.filter(x=>x!==v);
+    if(kind==='y')S.years=S.years.filter(x=>x!==v);
+    save();fillSelects();render();
+   }
+   draw();
+  };
+ };
+ draw();
+}
+['btnP','btnP2'].forEach(i=>$(i).onclick=()=>manage('p'));
+['btnA','btnA2'].forEach(i=>$(i).onclick=()=>manage('a'));
+$('btnY').onclick=()=>manage('y');
+
+function editItem(id){
+ const it=S.items.find(i=>i.id===id);
+ const sel=(n,arr,v)=>`<select id="${n}">${arr.map(x=>`<option ${String(x)===String(v)?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+ open(`<h3>Editar pendência</h3><div class="field"><label>Prestadora</label>${sel('eP',S.providers,it.p)}</div><div class="field"><label>Endereço</label>${sel('eA',sortedAddr(),it.a)}</div><div class="field"><label>Ano</label>${sel('eY',[...S.years].sort(),it.y)}</div><label>Meses</label><div class="mgrid">${MESES.map((m,i)=>`<label><input type="checkbox" value="${i}" ${it.m.includes(i)?'checked':''}>${m}</label>`).join('')}</div><div class="acts"><button id="n">Cancelar</button><button class="pri" style="width:auto" id="s">Salvar</button></div>`);
+ dlg.onclose=null;
+ $('n').onclick=()=>dlg.close();
+ $('s').onclick=()=>{
+  const ms=[...dlg.querySelectorAll('.mgrid input:checked')].map(c=>+c.value);
+  const p=$('eP').value,a=$('eA').value,y=+$('eY').value;
+  S.items=S.items.filter(i=>i!==it);
+  if(ms.length){
+   const o=S.items.find(i=>i.p===p&&i.a===a&&i.y===y);
+   if(o)o.m=[...new Set([...o.m,...ms])];else S.items.push({id:it.id,p,a,y,m:ms});
+  }
+  commit();dlg.close();toast('Alterações salvas.');
+ };
+}
+
+/* limpar, copiar, imprimir */
+$('clear').onclick=async()=>{
+ if(await confirmBox('Limpar tudo','Todas as pendências e configurações cadastradas serão excluídas e os dados iniciais restaurados.','Limpar tudo')){
+  S=defaults();save();fillSelects();render();toast('Tudo limpo.');
+ }
+};
+function plain(){return groups().map(b=>b.p+'\n\n'+b.its.map(i=>`${i.a} – ${i.y}\n\n${fmt(i.m)}`).join('\n\n')).join('\n\n\n')}
+$('copy').onclick=async()=>{
+ const t=plain();if(!t){toast('Nada para copiar.');return}
+ try{await navigator.clipboard.writeText(t)}catch(e){
+  const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+ }
+ toast('Listagem copiada.');
+};
+$('print').onclick=()=>window.print();
+
+fillSelects();render();
+})();
+</script>
+</body>
+</html>
